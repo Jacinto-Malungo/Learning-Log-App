@@ -90,28 +90,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Configuração de banco de dados
-if 'RENDER' in os.environ:
-    # Configuração para produção no Render
-    DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            ssl_require=True,
-            # Fallback explícito para SQLite se DATABASE_URL não existir
-            default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
-        )
-    }
-else:
-    # Configuração local
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 # Hosts permitidos
-ALLOWED_HOSTS = ['*']  # Em produção, substitua pelo seu domínio
-
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = [
+        'https://learning-log-app-4l2w.onrender.com',  # Substitua pelo seu domínio real
+        '*.onrender.com',
+    ]
 
 
 
