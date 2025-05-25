@@ -86,20 +86,31 @@ WSGI_APPLICATION = 'learning_log.wsgi.application'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Configuração robusta do banco de dados
-DATABASE_URL = os.environ.get('DATABASE_URL', '')
+# Debug seguro - False em produção, True localmente
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
-    DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+# Configuração de banco de dados
+if 'RENDER' in os.environ:
+    # Configuração para produção no Render
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            ssl_require=True,
+            # Fallback explícito para SQLite se DATABASE_URL não existir
+            default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
+        )
+    }
+else:
+    # Configuração local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR}/db.sqlite3',
-        conn_max_age=600,
-        ssl_require='RENDER' in os.environ
-    )
-}
-
+# Hosts permitidos
+ALLOWED_HOSTS = ['*']  # Em produção, substitua pelo seu domínio
 
 
 
