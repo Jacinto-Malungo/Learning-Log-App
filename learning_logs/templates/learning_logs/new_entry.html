@@ -1,24 +1,142 @@
 {% extends "learning_logs/base.html" %}
-{% load bootstrap3 %}
+{% load static %}
 
 {% block header %}
-    <h2>Add a new entry for topic: 
-        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
-    </h2>
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'learning_logs:index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'learning_logs:topics' %}">Topics</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic|truncatechars:20 }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">New Entry</li>
+        </ol>
+    </nav>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                <i class="bi bi-plus-circle text-success"></i> New Entry
+            </h2>
+            <p class="text-muted mb-0">Adding to: <a href="{% url 'learning_logs:topic' topic.id %}" class="text-decoration-none">{{ topic }}</a></p>
+        </div>
+        <a href="{% url 'learning_logs:topic' topic.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Topic
+        </a>
+    </div>
+</div>
 {% endblock header %}
 
 {% block content %}
-    <div class="container mt-5">
-        <form action="{% url 'learning_logs:new_entry' topic.id %}" method="post" class="form">
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            
-            {% buttons %}
-                <button name="submit" class="btn btn-primary">Add entry</button>
-                <a href="{% url 'learning_logs:topic' topic.id %}" class="btn btn-default">
-                    Cancel
-                </a>
-            {% endbuttons %}
-        </form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form action="{% url 'learning_logs:new_entry' topic.id %}" method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_text" class="form-label fw-bold">Entry Content</label>
+                            <textarea class="form-control" id="id_text" name="text" rows="8" 
+                                      placeholder="Write your new entry here..." required></textarea>
+                            <div class="form-text mt-2">
+                                <i class="bi bi-markdown"></i> Markdown is supported. 
+                                <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="modal" data-bs-target="#markdownHelp">
+                                    View formatting guide
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center border-top pt-4">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-plus-lg"></i> Add Entry
+                            </button>
+                            <a href="{% url 'learning_logs:topic' topic.id %}" class="btn btn-outline-danger">
+                                <i class="bi bi-x-lg"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<!-- Markdown Help Modal -->
+<div class="modal fade" id="markdownHelp" tabindex="-1" aria-labelledby="markdownHelpLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="markdownHelpLabel">
+                    <i class="bi bi-markdown"></i> Markdown Formatting Guide
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Text Formatting</h6>
+                        <ul class="list-unstyled">
+                            <li><code>**bold**</code> → <strong>bold</strong></li>
+                            <li><code>*italic*</code> → <em>italic</em></li>
+                            <li><code>~~strikethrough~~</code> → <del>strikethrough</del></li>
+                        </ul>
+                        
+                        <h6 class="mt-3">Headers</h6>
+                        <pre><code># Header 1
+## Header 2
+### Header 3</code></pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Lists</h6>
+                        <pre><code>- Unordered item
+1. Ordered item</code></pre>
+                        
+                        <h6 class="mt-3">Links & Images</h6>
+                        <pre><code>[Link text](URL)
+![Alt text](image URL)</code></pre>
+                        
+                        <h6 class="mt-3">Code</h6>
+                        <pre><code>`inline code`
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #id_text {
+        min-height: 250px;
+    }
+    .breadcrumb {
+        background-color: transparent;
+        padding-left: 0;
+    }
+    .form-text button {
+        vertical-align: baseline;
+    }
+</style>
+
+<script>
+    // Validação do formulário
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 {% endblock content %}

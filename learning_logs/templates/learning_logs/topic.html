@@ -1,33 +1,97 @@
 {% extends 'learning_logs/base.html' %}
+{% load static %}
 
 {% block header %}
-    <h2>{{ topic }}</h2>
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'learning_logs:index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'learning_logs:topics' %}">All Topics</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ topic|truncatechars:20 }}</li>
+        </ol>
+    </nav>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                <i class="bi bi-journal-bookmark text-primary"></i> {{ topic }}
+            </h2>
+            <small class="text-muted">
+                Created on {{ topic.date_added|date:'F j, Y' }}
+                {% if topic.date_added != topic.date_modified %}
+                    | Last modified {{ topic.date_modified|date:'F j, Y' }}
+                {% endif %}
+            </small>
+        </div>
+        <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> New Entry
+        </a>
+    </div>
+</div>
 {% endblock header %}
 
 {% block content %}
-    <p>
-        <a href="{% url 'learning_logs:new_entry' topic.id %}">
-            add new entry
-        </a>
-    </p>
-    
-    {% for entry in entries %}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3>
-                    {{ entry.date_added|date:'M d, Y H:i' }}
-                    <small>
-                        <a href="{% url 'learning_logs:edit_entry' entry.id %}">
-                            edit entry
+<div class="container">
+    {% if entries %}
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            {% for entry in entries %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-calendar-event text-muted"></i>
+                        <span class="text-muted ms-2">{{ entry.date_added|date:'M d, Y H:i' }}</span>
+                        {% if entry.date_added != entry.date_modified %}
+                            <small class="text-muted ms-2">(edited {{ entry.date_modified|date:'M d, Y H:i' }})</small>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="{% url 'learning_logs:edit_entry' entry.id %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-pencil"></i> Edit
                         </a>
-                    </small>
-                </h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="entry-content">
+                        {{ entry.text|linebreaks }}
+                    </div>
+                </div>
             </div>
-            <div class="panel-body">
-                {{ entry.text|linebreaks }}
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card border-0 text-center py-5">
+                <div class="card-body">
+                    <i class="bi bi-journal-text display-4 text-muted mb-4"></i>
+                    <h3 class="text-muted">No entries yet</h3>
+                    <p class="text-muted">Start documenting your learning journey by adding your first entry</p>
+                    <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-primary mt-3">
+                        <i class="bi bi-plus-lg"></i> Create First Entry
+                    </a>
+                </div>
             </div>
-        </div> <!-- panel -->
-    {% empty %}
-        There are no entries for this topic yet.
-    {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .breadcrumb {
+        background-color: transparent;
+        padding-left: 0;
+    }
+    .card {
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    .entry-content {
+        line-height: 1.6;
+    }
+    .entry-content p:last-child {
+        margin-bottom: 0;
+    }
+</style>
 {% endblock content %}

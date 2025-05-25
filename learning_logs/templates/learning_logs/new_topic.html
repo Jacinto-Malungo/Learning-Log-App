@@ -1,17 +1,107 @@
 {% extends "learning_logs/base.html" %}
-{% load bootstrap3 %}
+{% load static %}
 
 {% block header %}
-    <h2>Add a new topic:</h2>
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'learning_logs:index' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'learning_logs:topics' %}">All Topics</a></li>
+            <li class="breadcrumb-item active" aria-current="page">New Topic</li>
+        </ol>
+    </nav>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">
+                <i class="bi bi-plus-square-fill text-primary"></i> Create New Topic
+            </h2>
+            <p class="text-muted mb-0">Organize your learning into specific subjects</p>
+        </div>
+        <a href="{% url 'learning_logs:topics' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Topics
+        </a>
+    </div>
+</div>
 {% endblock header %}
 
 {% block content %}
-    <form action="{% url 'learning_logs:new_topic' %}" method='post'
-        class="form">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        {% buttons %}
-        <button name="submit" class="btn btn-primary">add topic</button>
-        {% endbuttons %}
-    </form>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <form action="{% url 'learning_logs:new_topic' %}" method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_text" class="form-label fw-bold">Topic Name</label>
+                            <input type="text" class="form-control form-control-lg" id="id_text" name="text" 
+                                   placeholder="e.g. Python Programming, Web Development, Machine Learning" required>
+                            <div class="form-text mt-2">
+                                Choose a clear, descriptive name for your topic.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label fw-bold">Description (Optional)</label>
+                            <textarea class="form-control" id="id_description" name="description" 
+                                      rows="3" placeholder="Briefly describe what this topic is about..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end border-top pt-4">
+                            <a href="{% url 'learning_logs:topics' %}" class="btn btn-outline-danger me-md-2">
+                                <i class="bi bi-x-lg"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-save"></i> Create Topic
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-3 bg-light rounded-3">
+                <h5 class="mb-3"><i class="bi bi-lightbulb"></i> Tips for good topics:</h5>
+                <ul class="mb-0">
+                    <li>Be specific (e.g., "Django Models" instead of just "Django")</li>
+                    <li>Keep it focused on a single subject area</li>
+                    <li>Use title case for better readability</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .breadcrumb {
+        background-color: transparent;
+        padding-left: 0;
+    }
+    .card {
+        border-radius: 10px;
+    }
+    #id_text {
+        font-size: 1.1rem;
+    }
+</style>
+
+<script>
+    // Validação do formulário
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
 {% endblock content %}
