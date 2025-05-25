@@ -1,18 +1,74 @@
 {% extends "learning_logs/base.html" %}
 
 {% block header %}
-    <div class='jumbotron'>
-        <h1>Track your learning.</h1>
+    <div class="py-5 text-center bg-light rounded-3" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+        <div class="container py-5">
+            <h1 class="display-4 fw-bold text-primary">
+                <i class="bi bi-journal-bookmark"></i> Track Your Learning Journey
+            </h1>
+            <p class="lead text-muted">
+                Organize, record and reflect on everything you're learning
+            </p>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'users:register' %}" class="btn btn-primary btn-lg mt-3 px-4">
+                    <i class="bi bi-person-plus"></i> Get Started - It's Free
+                </a>
+            {% else %}
+                <a href="{% url 'learning_logs:topics' %}" class="btn btn-success btn-lg mt-3 px-4">
+                    <i class="bi bi-journal-text"></i> View Your Topics
+                </a>
+            {% endif %}
+        </div>
     </div>
 {% endblock header %}
 
 {% block content %}
-    <h2>
-        <a href="{% url 'users:register' %}">Register an account</a> 
-        to make your own Learning Log, and list the topics you're learning about.
-    </h2>
-
-    <h2>
-        Whenever you learn something new about a topic, make an entry summarizing what you've learned.
-    </h2>
+    <div class="row g-4 py-5">
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-primary bg-gradient rounded-3 mb-3 p-3 d-inline-block">
+                        <i class="bi bi-journal-plus text-white fs-2"></i>
+                    </div>
+                    <h2 class="h4">Create Your Learning Log</h2>
+                    <p class="text-muted">
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'users:register' %}" class="text-decoration-none">Register an account</a> 
+                            to make your own Learning Log and organize the topics you're learning about.
+                        {% else %}
+                            You can now <a href="{% url 'learning_logs:new_topic' %}" class="text-decoration-none">create new topics</a> 
+                            to organize your learning journey.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="feature-icon bg-success bg-gradient rounded-3 mb-3 p-3 d-inline-block">
+                        <i class="bi bi-pencil-square text-white fs-2"></i>
+                    </div>
+                    <h2 class="h4">Record Your Progress</h2>
+                    <p class="text-muted">
+                        Whenever you learn something new about a topic, make an entry summarizing what you've learned. 
+                        Track your progress over time and see how far you've come.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if not user.is_authenticated %}
+    <div class="alert alert-info mt-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+            <div>
+                Already have an account? <a href="{% url 'users:login' %}" class="alert-link">Log in</a> 
+                to access your existing learning logs.
+            </div>
+        </div>
+    </div>
+    {% endif %}
 {% endblock content %}
