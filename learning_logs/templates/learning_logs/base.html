@@ -1,67 +1,142 @@
 {% load bootstrap3 %}
 
+{% load static %}  <!-- Adicione esta linha para carregar arquivos estáticos -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-
-    scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Learning Log</title>
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS (opcional) -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+        }
+        
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+        
+        .page-header {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 
 <body>
-    
-    <!-- Static navbar -->
-    <nav class="navbar navbar-default navbar-static-top">
+    <!-- Navbar modernizada -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed"
-                data-toggle="collapse" data-target="#navbar"
-                aria-expanded="false" aria-controls="navbar">
-                </button>
-                <a class="navbar-brand" href="{% url 'learning_logs:index'%}">
-                    Learning Log
-                </a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                <li><a href="{% url 'learning_logs:topics' %}">Topics</a>
-                </li>
+            <a class="navbar-brand" href="{% url 'learning_logs:index'%}">
+                <i class="bi bi-journal-bookmark-fill"></i> Learning Log
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'learning_logs:topics' %}">
+                            <i class="bi bi-collection"></i> Topics
+                        </a>
+                    </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
+                
+                <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <li><a>Hello, {{ user.username }}.</a></li>
-                        <li><a href="{% url 'users:logout' %}">log out</a></li>
-                    {% else %}
-                        <li><a href="{% url 'users:register' %}">register</a>
+                        <li class="nav-item">
+                            <span class="nav-link">
+                                <i class="bi bi-person-circle"></i> Hello, {{ user.username }}
+                            </span>
                         </li>
-                        <li><a href="{% url 'users:login' %}">log in</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:logout' %}">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">
+                                <i class="bi bi-person-plus"></i> Register
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
-            </div><!--/.nav-collapse -->
+            </div>
         </div>
     </nav>
 
+    <!-- Conteúdo principal -->
     <div class="container">
         <div class="page-header">
             {% block header %}{% endblock header %}
         </div>
         
-        <div>
+        <div class="content">
             {% block content %}{% endblock content %}
         </div>
-    </div> <!-- /container -->
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer" style="margin-top: 20px; padding: 20px 0; background-color: #f8f8f8; border-top: 1px solid #e7e7e7;">
-        <div class="container">
-            <p class="text-muted text-center">
-                Developed by <a href="https://www.linkedin.com/in/jacinto-bunga-malungo-90128679/" target="_blank">Jacinto Malungo</a>
+    <!-- Footer melhorado -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="mb-0">
+                &copy; {% now "Y" %} Learning Log. All rights reserved.
+                <br>
+                Developed with <i class="bi bi-heart-fill text-danger"></i> by 
+                <a href="https://www.linkedin.com/in/jacinto-bunga-malungo-90128679/" target="_blank">Jacinto Malungo</a>
             </p>
         </div>
     </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
