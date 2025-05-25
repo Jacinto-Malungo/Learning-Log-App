@@ -1,0 +1,33 @@
+{% extends "learning_logs/base.html" %}
+{% load bootstrap3 %}
+
+{% block header %}
+    <h2>Create a new account</h2>
+{% endblock header %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <form method="post" action="{% url 'users:register' %}" class="form">
+                    {% csrf_token %}
+                    
+                    {% bootstrap_form form %}
+                    
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <a href="{% url 'learning_logs:index' %}" class="btn btn-default">
+                            Cancel
+                        </a>
+                    {% endbuttons %}
+                    
+                    <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p>Already have an account? <a href="{% url 'users:login' %}">Log in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
